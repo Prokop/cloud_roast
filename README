@@ -1,0 +1,17 @@
+Contains 3 subprojects
+
+./opencafe
+
+The Open Common Automation Framework Engine is the core engine/driver used to build an automated testing framework. It is designed to be used as the base engine for building an automated framework for API and non-UI resource testing. It is designed to support functional, integration and reliability testing. The engine is **NOT** designed to support performance or load testing.
+
+CAFE core provides a model, a pattern and assorted common tools for building automated tests. It provides its own light weight unittest based runner, however, it is designed to be modular. It can be extended to support most test case front ends/runners (nose, pytest, lettuce, testr, etc...) through driver plug-ins.
+
+./cloudcafe
+
+Implementation of the [Open CAFE Framework](https://github.com/stackforge/opencafe) specifically designed to test deployed versions of [OpenStack](http://http://www.openstack.org/). It is built using the [Open CAFE Core](https://github.com/stackforge/opencafe).
+
+./cloudroast
+
+Rich, full bodied blend of premium roasted automated test cases. CloudRoast tests are based on the expanded unittest driver in the [Open CAFE Core](https://github.com/stackforge) and built using the [CloudCAFE Framework](https://github.com/stackforge).  
+
+CloudRoast tests support smoke, functional, integration, scenario and reliability based test cases for OpenStack. It is meant to be highly flexible and leave the logic of the testing in the hands of the test case developer while leaving the interactions with OpenStack, various resources and support infrastructure to CloudCAFE.
