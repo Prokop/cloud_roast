@@ -30,7 +30,7 @@ class NetworkGetTest(NetworkingAPIFixture):
         # Data for creating networks and asserting responses
         cls.network_data = dict(
             status='ACTIVE', subnets=[],
-            name='test_net_create', admin_state_up=None,
+            name='test_net_ create', admin_state_up=None,
             tenant_id=cls.net.networking_auth_composite().tenant_id,
             shared=False)
 
