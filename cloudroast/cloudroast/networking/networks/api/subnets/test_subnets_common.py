@@ -4,6 +4,7 @@ from cafe.drivers.unittest.decorators import tags
 from cloudcafe.networking.networks.common.models.response.network \
     import Network
 from cloudroast.networking.networks.fixtures import NetworkingAPIFixture
+import pdb
 
 class NetworkUpdateDeleteTest(NetworkingAPIFixture):
     @classmethod
@@ -37,20 +38,22 @@ class NetworkUpdateDeleteTest(NetworkingAPIFixture):
     def tearDown(self):
         self.networkingCleanUp()
 
-    @tags('subnets')
+    @tags('subnets','test')
     def test_subnet_create(self):
         expected_net = self.network
-        request_kwargs = dict(network_id=expected_net.id)
+        request_kwargs = dict(network_id=expected_net.id, name = 'test_create_subnet', use_exact_name=True)
         name = 'test_create_subnet'
         request_kwargs['name'] = name
         expected_net.name = name
-        resp = self.networks.subnets_api.behaviors.create_subnet(**request_kwargs)
+        resp = self.subnets.behaviors.create_subnet(**request_kwargs)
         # Fail the test if any failure is found
         self.assertFalse(resp.failures)
-        upd_net = resp.response.entity
-        self.assertNetworkResponse(expected_net, upd_net)
+        upd_subnet = resp.response.entity
+        self.assertEqual(request_kwargs['name'],upd_subnet.name)
+        self.assertEqual(request_kwargs['network_id'],upd_subnet.network_id)
+        # self.assertSubnetResponse(upd_subnet)
 
-
+    @tags('subnets')
     def test_subnet_read(self):
         expected_net = self.network
         request_kwargs = dict(network_id=expected_net.id)
@@ -61,9 +64,9 @@ class NetworkUpdateDeleteTest(NetworkingAPIFixture):
         # Fail the test if any failure is found
         self.assertFalse(resp.failures)
         upd_net = resp.response.entity
-        self.assertNetworkResponse(expected_net, upd_net)
+        self.assertSubnetResponse(expected_net, upd_net)
 
-
+    @tags('subnets')
     def test_subnet_update(self):
         expected_net = self.network
         request_kwargs = dict(network_id=expected_net.id)
@@ -74,8 +77,9 @@ class NetworkUpdateDeleteTest(NetworkingAPIFixture):
         # Fail the test if any failure is found
         self.assertFalse(resp.failures)
         upd_net = resp.response.entity
-        self.assertNetworkResponse(expected_net, upd_net)
+        self.assertSubnetResponse(expected_net, upd_net)
 
+    @tags('subnets')
     def test_subnet_delete(self):
         expected_net = self.network
         request_kwargs = dict(network_id=expected_net.id)
@@ -86,9 +90,9 @@ class NetworkUpdateDeleteTest(NetworkingAPIFixture):
         # Fail the test if any failure is found
         self.assertFalse(resp.failures)
         upd_net = resp.response.entity
-        self.assertNetworkResponse(expected_net, upd_net)
+        self.assertSubnetResponse(expected_net, upd_net)
 
-
+    @tags('subnets')
     def test_subnet_list(self):
         expected_net = self.network
         request_kwargs = dict(network_id=expected_net.id)
@@ -99,4 +103,4 @@ class NetworkUpdateDeleteTest(NetworkingAPIFixture):
         # Fail the test if any failure is found
         self.assertFalse(resp.failures)
         upd_net = resp.response.entity
-        self.assertNetworkResponse(expected_net, upd_net)
+        self.assertSubnetResponse(expected_net, upd_net)
