@@ -4,6 +4,8 @@ from cafe.drivers.unittest.decorators import tags
 from cloudcafe.networking.networks.common.models.response.network \
     import Network
 from cloudroast.networking.networks.fixtures import NetworkingAPIFixture
+from cloudcafe.networking.networks.common.constants \
+    import NeutronResponseCodes, NeutronErrorTypes
 import pdb
 
 class NetworkUpdateDeleteTest(NetworkingAPIFixture):
@@ -38,7 +40,7 @@ class NetworkUpdateDeleteTest(NetworkingAPIFixture):
     def tearDown(self):
         self.networkingCleanUp()
 
-    @tags('subnets','test')
+    @tags('subnets')
     def test_subnet_create(self):
         expected_net = self.network
         request_kwargs = dict(network_id=expected_net.id, name = 'test_create_subnet', use_exact_name=True)
@@ -56,51 +58,83 @@ class NetworkUpdateDeleteTest(NetworkingAPIFixture):
     @tags('subnets')
     def test_subnet_read(self):
         expected_net = self.network
-        request_kwargs = dict(network_id=expected_net.id)
-        name = 'test_read_subnet'
-        request_kwargs['name'] = name
-        expected_net.name = name
-        resp = self.networks.subnets_api.behaviors.get_subnet(**request_kwargs)
-        # Fail the test if any failure is found
-        self.assertFalse(resp.failures)
-        upd_net = resp.response.entity
-        self.assertSubnetResponse(expected_net, upd_net)
-
-    @tags('subnets')
-    def test_subnet_update(self):
-        expected_net = self.network
-        request_kwargs = dict(network_id=expected_net.id)
+        request_kwargs = dict(network_id=expected_net.id, name = 'test_create_subnet', use_exact_name=True)
         name = 'test_create_subnet'
         request_kwargs['name'] = name
         expected_net.name = name
-        resp = self.networks.subnets_api.behaviors.update_subnet(**request_kwargs)
+        resp = self.subnets.behaviors.create_subnet(**request_kwargs)
         # Fail the test if any failure is found
         self.assertFalse(resp.failures)
-        upd_net = resp.response.entity
-        self.assertSubnetResponse(expected_net, upd_net)
+        created_subnet = resp.response.entity
+        self.assertEqual(created_subnet, self.subnets.behaviors.get_subnet(created_subnet.id).response.entity)
 
-    @tags('subnets')
-    def test_subnet_delete(self):
-        expected_net = self.network
-        request_kwargs = dict(network_id=expected_net.id)
-        name = 'test_create_subnet'
-        request_kwargs['name'] = name
-        expected_net.name = name
-        resp = self.networks.subnets_api.behaviors.delete_subnet(**request_kwargs)
-        # Fail the test if any failure is found
-        self.assertFalse(resp.failures)
-        upd_net = resp.response.entity
-        self.assertSubnetResponse(expected_net, upd_net)
 
-    @tags('subnets')
+
+    # @tags('subnets','test2')
+    # def test_subnet_update(self):
+    #     expected_net = self.network
+    #     request_kwargs = dict(network_id=expected_net.id, name = 'test_create_subnet', use_exact_name=True)
+    #     name = 'test_create_subnet'
+    #     request_kwargs['name'] = name
+    #     expected_net.name = name
+    #     resp = self.subnets.behaviors.create_subnet(**request_kwargs)
+    #     # Fail the test if any failure is found
+    #     self.assertFalse(resp.failures)
+    #     created_subnet = resp.response.entity
+    #     update_request_kwargs = dict(subnet_id=resp.id, name="test_updated_subnet")
+    #     resp_updated_net = self.subnets.behaviors.update_subnet(**update_request_kwargs)
+    #     # Fail the test if any failure is found
+    #     self.assertFalse(resp_updated_net.failures)
+    #     resp_updated_net = resp_updated_net.response.entity
+    #     self.assertEqual(resp, resp_updated_net)
+
+    # @tags('subnets','test3')
+    # def test_subnet_delete(self):
+    #     """
+    #     @summart: Testing deleting a network
+    #     """
+    #     expected_net = self.network
+    #     expected_subnet = self.subnets
+    #     request_kwargs = dict(network_id=expected_net.id, name = 'test_create_subnet', use_exact_name=True)
+    #     name = 'test_create_subnet'
+    #     request_kwargs['name'] = name
+    #     expected_net.name = name
+    #     resp = self.subnets.behaviors.create_subnet(**request_kwargs)
+    #     # Fail the test if any failure is found
+    #     self.assertFalse(resp.failures)
+    #
+    #     resp = self.subnets.behaviors.delete_subnet(expected_subnet.id)
+    #     self.assertFalse(resp.failures)
+    #
+    #     resp = self.networks.behaviors.get_subnet(expected_subnet.id)
+    #
+    #     neg_msg = ('(negative) Getting a deleted subnet')
+    #     status_code = NeutronResponseCodes.NOT_FOUND
+    #     error_type = NeutronErrorTypes.NETWORK_NOT_FOUND
+    #     self.assertNegativeResponse(
+    #         resp=resp, status_code=status_code, msg=neg_msg,
+    #         delete_list=self.delete_networks,
+    #         error_type=error_type)
+    # #
+
+
+    @tags('testify')
     def test_subnet_list(self):
         expected_net = self.network
-        request_kwargs = dict(network_id=expected_net.id)
+        request_kwargs = dict(network_id=expected_net.id, name = 'test_create_subnet', use_exact_name=True)
         name = 'test_create_subnet'
         request_kwargs['name'] = name
         expected_net.name = name
-        resp = self.networks.subnets_api.behaviors.list_subnets(**request_kwargs)
+        resp = self.subnets.behaviors.subnet(**request_kwargs)
         # Fail the test if any failure is found
         self.assertFalse(resp.failures)
-        upd_net = resp.response.entity
-        self.assertSubnetResponse(expected_net, upd_net)
+        upd_subnet = resp.response.entity
+
+
+        resp = self.networks.behaviors.list_subnets()
+        self.assertFalse(resp.failures)
+        list_subnets = resp.response.entity
+
+        msg = ('Network {0} missing in expected network list').format(
+                self.network, list_subnets)
+        self.assertIn(self.network, list_subnets, msg)
