@@ -18,6 +18,7 @@ from cafe.drivers.unittest.decorators import tags
 from cloudcafe.networking.networks.common.models.response.network \
     import Network
 from cloudroast.networking.networks.fixtures import NetworkingAPIFixture
+import pdb
 
 
 class NetworkGetTest(NetworkingAPIFixture):

@@ -179,7 +179,7 @@ class SubnetsClient(AutoMarshallingHTTPClient):
         @type tenant_id: string
         @param gateway_ip: gateway_ip to filter by
         @type gateway_ip: string
-        @param ip_version: IP version 4 or 6 to filter by
+        @param ip_version: IP version 4 or 6 to filter byску
         @type ip_version: int
         @param enable_dhcp: enable_dhcp status to filter by
         @type enable_dhcp: bool

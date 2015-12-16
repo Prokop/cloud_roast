@@ -23,3 +23,4 @@ class BehaviorResponse(object):
         self.response = None
         self.ok = False
         self.entity = None
+        self.object = None
